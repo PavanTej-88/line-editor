@@ -76,3 +76,12 @@ void doc_insert(Document *doc, int pos, const char *text) {
     doc->lines[pos - 1] = my_strdup(text);
     doc->count++;
 }
+void doc_display(const Document *doc) {
+    if (doc->count == 0) {
+        printf("(document is empty)\n");
+        return;
+    }
+    for (int i = 0; i < doc->count; i++) {
+        printf("%3d: %s\n", i + 1, doc->lines[i]);
+    }
+}
