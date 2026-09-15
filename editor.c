@@ -104,3 +104,51 @@ int doc_delete(Document *doc, int pos) {
     doc->count--;
     return 1;
 }
+void doc_save(const Document *doc, const char *filename) {
+    FILE *fp = fopen(filename, "w");
+    if (fp == NULL) {
+        printf("Error: could not open '%s' for writing.\n", filename);
+        return;
+    }
+    for (int i = 0; i < doc->count; i++) {
+        fprintf(fp, "%s\n", doc->lines[i]);
+    }
+    fclose(fp);
+    printf("Saved %d line(s) to '%s'.\n", doc->count, filename);
+}
+
+void doc_load(Document *doc, const char *filename) {
+    FILE *fp = fopen(filename, "r");
+    if (fp == NULL) {
+        printf("Error: could not open '%s'.\n", filename);
+        return;
+    }
+
+    /* clear whatever is currently in memory before loading */
+    for (int i = 0; i < doc->count; i++) {
+        free(doc->lines[i]);
+    }
+    doc->count = 0;
+
+    char buf[MAX_LINE_LEN];
+    while (fgets(buf, sizeof(buf), fp) != NULL) {
+        buf[strcspn(buf, "\n")] = '\0';   /* strip trailing newline */
+        doc_insert(doc, doc->count + 1, buf);
+    }
+    fclose(fp);
+    printf("Loaded %d line(s) from '%s'.\n", doc->count, filename);
+}
+
+/* Bonus feature: search for a word/phrase, report matching line numbers. */
+void doc_search(const Document *doc, const char *needle) {
+    int found = 0;
+    for (int i = 0; i < doc->count; i++) {
+        if (strstr(doc->lines[i], needle) != NULL) {
+            printf("Match on line %d: %s\n", i + 1, doc->lines[i]);
+            found = 1;
+        }
+    }
+    if (!found) {
+        printf("No matches found for \"%s\".\n", needle);
+    }
+}
