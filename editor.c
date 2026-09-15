@@ -17,7 +17,6 @@
  *    still O(n), and display + save/load become more fiddly to write
  *    correctly under time pressure.
  */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -40,13 +39,11 @@ static char *my_strdup(const char *s) {
     }
     return copy;
 }
-
 void doc_init(Document *doc) {
     doc->capacity = INITIAL_CAPACITY;
     doc->count = 0;
     doc->lines = malloc(sizeof(char *) * doc->capacity);
 }
-
 void doc_free(Document *doc) {
     for (int i = 0; i < doc->count; i++) {
         free(doc->lines[i]);
@@ -56,7 +53,6 @@ void doc_free(Document *doc) {
     doc->count = 0;
     doc->capacity = 0;
 }
-
 static void doc_grow_if_needed(Document *doc) {
     if (doc->count == doc->capacity) {
         doc->capacity *= 2;
@@ -80,7 +76,15 @@ void doc_insert(Document *doc, int pos, const char *text) {
     doc->lines[pos - 1] = my_strdup(text);
     doc->count++;
 }
-
+void doc_display(const Document *doc) {
+    if (doc->count == 0) {
+        printf("(document is empty)\n");
+        return;
+    }
+    for (int i = 0; i < doc->count; i++) {
+        printf("%3d: %s\n", i + 1, doc->lines[i]);
+    }
+}
 /* Delete line number `pos` (1-indexed). Returns 1 on success,
  * 0 if pos was invalid (document empty or out of range). */
 int doc_delete(Document *doc, int pos) {
@@ -100,17 +104,6 @@ int doc_delete(Document *doc, int pos) {
     doc->count--;
     return 1;
 }
-
-void doc_display(const Document *doc) {
-    if (doc->count == 0) {
-        printf("(document is empty)\n");
-        return;
-    }
-    for (int i = 0; i < doc->count; i++) {
-        printf("%3d: %s\n", i + 1, doc->lines[i]);
-    }
-}
-
 void doc_save(const Document *doc, const char *filename) {
     FILE *fp = fopen(filename, "w");
     if (fp == NULL) {
@@ -159,7 +152,6 @@ void doc_search(const Document *doc, const char *needle) {
         printf("No matches found for \"%s\".\n", needle);
     }
 }
-
 void print_help(void) {
     printf("Commands:\n");
     printf("  i <line#> <text>   insert text as the given line number\n");
@@ -190,7 +182,6 @@ int main(void) {
         if (strlen(line) == 0) {
             continue;   /* ignore blank input */
         }
-
         char cmd = line[0];
         char *rest = line + 1;
         while (*rest == ' ') rest++;   /* skip spaces after the command letter */
