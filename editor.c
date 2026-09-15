@@ -53,3 +53,26 @@ void doc_free(Document *doc) {
     doc->count = 0;
     doc->capacity = 0;
 }
+static void doc_grow_if_needed(Document *doc) {
+    if (doc->count == doc->capacity) {
+        doc->capacity *= 2;
+        doc->lines = realloc(doc->lines, sizeof(char *) * doc->capacity);
+    }
+}
+
+/* Insert `text` so it becomes line number `pos` (1-indexed).
+ * Passing pos == count + 1 appends at the end.
+ * Out-of-range positions are clamped instead of rejected, so the
+ * editor never crashes on a bad line number here. */
+void doc_insert(Document *doc, int pos, const char *text) {
+    if (pos < 1) pos = 1;
+    if (pos > doc->count + 1) pos = doc->count + 1;
+
+    doc_grow_if_needed(doc);
+
+    for (int i = doc->count; i >= pos; i--) {
+        doc->lines[i] = doc->lines[i - 1];
+    }
+    doc->lines[pos - 1] = my_strdup(text);
+    doc->count++;
+}
