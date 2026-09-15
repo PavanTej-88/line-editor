@@ -152,3 +152,78 @@ void doc_search(const Document *doc, const char *needle) {
         printf("No matches found for \"%s\".\n", needle);
     }
 }
+void print_help(void) {
+    printf("Commands:\n");
+    printf("  i <line#> <text>   insert text as the given line number\n");
+    printf("  d <line#>          delete the given line number\n");
+    printf("  p                  print / display the whole document\n");
+    printf("  f <word>           find a word or phrase, report line numbers\n");
+    printf("  s <filename>       save the document to a text file\n");
+    printf("  l <filename>       load a document from a text file\n");
+    printf("  h                  show this help\n");
+    printf("  q                  quit the editor\n");
+}
+
+int main(void) {
+    Document doc;
+    doc_init(&doc);
+
+    char line[MAX_LINE_LEN];
+
+    printf("Simple Line Editor (C). Type 'h' for help, 'q' to quit.\n");
+
+    while (1) {
+        printf("> ");
+
+        char cmd = line[0];
+        char *rest = line + 1;
+        while (*rest == ' ') rest++;   /* skip spaces after the command letter */
+
+        if (cmd == 'q') {
+            break;
+        } else if (cmd == 'h') {
+            print_help();
+        } else if (cmd == 'p') {
+            doc_display(&doc);
+        } else if (cmd == 'i') {
+            int pos;
+            char text[MAX_LINE_LEN];
+            if (sscanf(rest, "%d %[^\n]", &pos, text) == 2) {
+                doc_insert(&doc, pos, text);
+            } else {
+                printf("Usage: i <line#> <text>\n");
+            }
+        } else if (cmd == 'd') {
+            int pos;
+            if (sscanf(rest, "%d", &pos) == 1) {
+                doc_delete(&doc, pos);
+            } else {
+                printf("Usage: d <line#>\n");
+            }
+        } else if (cmd == 'f') {
+            if (strlen(rest) > 0) {
+                doc_search(&doc, rest);
+            } else {
+                printf("Usage: f <word or phrase>\n");
+            }
+        } else if (cmd == 's') {
+            if (strlen(rest) > 0) {
+                doc_save(&doc, rest);
+            } else {
+                printf("Usage: s <filename>\n");
+            }
+        } else if (cmd == 'l') {
+            if (strlen(rest) > 0) {
+                doc_load(&doc, rest);
+            } else {
+                printf("Usage: l <filename>\n");
+            }
+        } else {
+            printf("Unknown command '%c'. Type 'h' for help.\n", cmd);
+        }
+    }
+
+    doc_free(&doc);
+    printf("Goodbye.\n");
+    return 0;
+}
