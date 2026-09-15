@@ -1,6 +1,6 @@
 # Line Editor — Help
 
-Run the editor, then type commands one at a time at the `>` prompt.
+Run the editor,then type commands one at a time at the `>` prompt.
 
 | Command | What it does | Example |
 |---|---|---|
