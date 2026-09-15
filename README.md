@@ -46,4 +46,4 @@ Type `h` at the prompt for the list of commands, or see `HELP.md`.
 - `editor.c` — the editor source code
 - `HELP.md` — command reference with usage examples
 - `README.md` — this file
-- paper design photo/scan — [add filename once uploaded]
+- paper design photo/scan — photo2.png
