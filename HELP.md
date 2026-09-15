@@ -37,4 +37,4 @@ Goodbye.
 
 - Line numbers start at 1.
 - Inserting at a line number beyond the end of the document appends the line at the end instead of failing.
-- Deleting an invalid line number (too high, too low, or on an empty document) prints an error and leaves the document unchanged — the editor does not crash.
+- Deleting an invalid line number (too high, too low, or on an empty document) prints an error, leaves the document unchanged — the editor does not crash.
