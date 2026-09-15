@@ -17,3 +17,39 @@
  *    still O(n), and display + save/load become more fiddly to write
  *    correctly under time pressure.
  */
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_LINE_LEN 1024
+#define INITIAL_CAPACITY 8
+
+typedef struct {
+    char **lines;   /* array of heap-allocated line strings   */
+    int count;      /* number of lines currently stored       */
+    int capacity;   /* allocated size of the lines array      */
+} Document;
+
+/* ---- small helper: our own strdup so this compiles cleanly
+ *      under -std=c99 with no "implicit declaration" warnings ---- */
+static char *my_strdup(const char *s) {
+    char *copy = malloc(strlen(s) + 1);
+    if (copy != NULL) {
+        strcpy(copy, s);
+    }
+    return copy;
+}
+void doc_init(Document *doc) {
+    doc->capacity = INITIAL_CAPACITY;
+    doc->count = 0;
+    doc->lines = malloc(sizeof(char *) * doc->capacity);
+}
+void doc_free(Document *doc) {
+    for (int i = 0; i < doc->count; i++) {
+        free(doc->lines[i]);
+    }
+    free(doc->lines);
+    doc->lines = NULL;
+    doc->count = 0;
+    doc->capacity = 0;
+}
