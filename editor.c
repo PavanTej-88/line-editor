@@ -174,7 +174,14 @@ int main(void) {
 
     while (1) {
         printf("> ");
+        if (fgets(line, sizeof(line), stdin) == NULL) {
+            break;   /* EOF, e.g. Ctrl+D */
+        }
+        line[strcspn(line, "\n")] = '\0';
 
+        if (strlen(line) == 0) {
+            continue;   /* ignore blank input */
+        }
         char cmd = line[0];
         char *rest = line + 1;
         while (*rest == ' ') rest++;   /* skip spaces after the command letter */
