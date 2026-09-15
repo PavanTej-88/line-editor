@@ -85,3 +85,22 @@ void doc_display(const Document *doc) {
         printf("%3d: %s\n", i + 1, doc->lines[i]);
     }
 }
+/* Delete line number `pos` (1-indexed). Returns 1 on success,
+ * 0 if pos was invalid (document empty or out of range). */
+int doc_delete(Document *doc, int pos) {
+    if (doc->count == 0) {
+        printf("Error: document is empty, nothing to delete.\n");
+        return 0;
+    }
+    if (pos < 1 || pos > doc->count) {
+        printf("Error: line %d does not exist. Valid range is 1-%d.\n", pos, doc->count);
+        return 0;
+    }
+
+    free(doc->lines[pos - 1]);
+    for (int i = pos - 1; i < doc->count - 1; i++) {
+        doc->lines[i] = doc->lines[i + 1];
+    }
+    doc->count--;
+    return 1;
+}
